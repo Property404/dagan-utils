@@ -1,0 +1,40 @@
+#!/usr/bin/env python3
+"""Utility to convert decimal to hex or vice-versa"""
+
+import sys
+import argparse
+
+
+def main():
+    """Main function"""
+
+    parser = argparse.ArgumentParser(
+        description="Convert decimal to hexadecimal and vice-versa."
+    )
+    parser.add_argument(
+        "integer",
+        metavar="N",
+        type=str,
+        nargs="?",
+        default=None,
+        help="Integer to be transformed",
+    )
+    parser.add_argument(
+        "-r", "--reverse", help="Convert hex to decimal", action="store_true"
+    )
+
+    args = parser.parse_args(sys.argv[1::])
+
+    val = args.integer
+
+    if val is None:
+        val = input()
+
+    if args.reverse:
+        print(int(val, 16))
+    else:
+        print(hex(int(val)))
+
+
+if __name__ == "__main__":
+    main()

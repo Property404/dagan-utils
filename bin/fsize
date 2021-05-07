@@ -1,0 +1,36 @@
+#!/usr/bin/env python3
+"""Get the file size and only the file size, because sometimes you want that
+without having to pipe through `cut`"""
+
+import os
+import sys
+import argparse
+
+
+def main():
+    """Main function"""
+
+    parser = argparse.ArgumentParser(description="Print the file size in bytes")
+    parser.add_argument(
+        "file", metavar="F", type=str, nargs="+", default=None, help="Target file"
+    )
+    parser.add_argument(
+        "-x", "--hexadecimal", help="Hexadecimal format", action="store_true"
+    )
+
+    args = parser.parse_args(sys.argv[1::])
+
+    for file_name in args.file:
+        try:
+            size = os.path.getsize(file_name)
+            if args.hexadecimal:
+                print(hex(size))
+            else:
+                print(size)
+        except FileNotFoundError:
+            print(f"Error: No such file '{file_name}'", file=sys.stderr)
+            sys.exit(1)
+
+
+if __name__ == "__main__":
+    main()

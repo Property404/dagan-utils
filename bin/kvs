@@ -1,0 +1,135 @@
+#!/usr/bin/env python3
+"""
+# Key Value Store
+Simple CLI utility to store and retrieve key/value pairs
+"""
+
+import json
+import os
+import argparse
+
+KVS_DIR = os.path.expanduser("~/.local/share/kvs/")
+DB_PATH = KVS_DIR + "kdb"
+
+
+class KvsException(Exception):
+    """Exception class used within this module"""
+
+
+class Database:
+    """Represents a kdb file"""
+
+    data = None
+    path = None
+
+    def __init__(self, path):
+        if not os.path.exists(KVS_DIR):
+            os.mkdir(KVS_DIR)
+        # Load database (or create if not exists)
+        if not os.path.isfile(path):
+            with open(path, "w+") as file:
+                file.write("""{"pairs":{}}""")
+        with open(path, "r") as file:
+            self.data = json.loads(file.read())
+        self.path = path
+
+    def save(self):
+        """Save whole database to a file"""
+        with open(self.path, "w") as file:
+            file.write(json.dumps(self.data) + "\n")
+
+    def delete_pair(self, key):
+        """Remove key/value pair from database"""
+        self.get_pairs().pop(key, None)
+
+    def set_value(self, key, value):
+        """Set or change value associated with key"""
+        self.data["pairs"][key] = value
+
+    def get_value(self, key):
+        """Return value associated with key"""
+        pairs = self.get_pairs()
+        if key not in pairs:
+            raise KvsException(f"No such key '{key}' in database")
+        return pairs[key]
+
+    def get_pairs(self):
+        """Return list of key/value pairs"""
+        return self.data["pairs"]
+
+    def __del__(self):
+        self.save()
+
+
+def store(args):
+    """Set a key/value pair in the local database"""
+    database = Database(DB_PATH)
+    key = args.key
+    value = args.value
+    database.set_value(key, value)
+
+
+def get(args):
+    """Get a key/value pair from the local database"""
+    database = Database(DB_PATH)
+    key = args.key
+    print(database.get_value(key))
+
+
+def rm_pair(args):
+    """Delete a key/value pair from the local database"""
+    database = Database(DB_PATH)
+    key = args.key
+    database.delete_pair(key)
+    print(f"Deleted {key} from database")
+
+
+def list_keys(_):
+    """List all keys in the local database"""
+    database = Database(DB_PATH)
+    pairs = database.get_pairs()
+    for key in pairs.keys():
+        print(f"{key} {pairs[key]}")
+
+
+def main():
+    """Main function"""
+    parser = argparse.ArgumentParser(description="Key-Value Store.")
+
+    subparsers = (
+        parser.add_subparsers()
+    )  # title="subcommands", description="valid subcommands", help=")
+
+    parser_set = subparsers.add_parser("set")
+    parser_set.add_argument("key", metavar="key", type=str, help="Key")
+    parser_set.add_argument("value", metavar="val", type=str, help="Value")
+    parser_set.set_defaults(func=store)
+
+    parser_get = subparsers.add_parser("get")
+    parser_get.add_argument("key", metavar="key", type=str, help="Key")
+    parser_get.set_defaults(func=get)
+
+    parser_get = subparsers.add_parser("rm")
+    parser_get.add_argument("key", metavar="key", type=str, help="Key")
+    parser_get.set_defaults(func=rm_pair)
+
+    parser_list = subparsers.add_parser("list")
+    parser_list.set_defaults(func=list_keys)
+
+    args = parser.parse_args(os.sys.argv[1::])
+
+    try:
+        args.func(args)
+    except AttributeError:
+        print("Please specify subcommand", file=os.sys.stderr)
+        parser.print_help()
+        return 1
+    except KvsException as err:
+        print(f"Error: {err}", file=os.sys.stderr)
+        return 1
+
+    return 0
+
+
+if __name__ == "__main__":
+    os.sys.exit(main())

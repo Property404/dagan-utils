@@ -1,0 +1,17 @@
+#!/usr/bin/env sh
+# Strips colors from output
+do_strip() {
+    # By SO user 'meustrus' under the CC-BY-SA license
+    # https://stackoverflow.com/a/51141872
+    sed 's/\x1B[@A-Z\\\]^_]\|\x1B\[[0-9:;<=>?]*[-!"#$%&'"'"'()*+,.\/]*[][\\@A-Z^_`a-z{|}~]//g'
+}
+
+if [ "$#" -eq 0 ]; then
+    do_strip
+elif [ "$#" -eq 1 ]; then
+    do_strip < "$1"
+else
+    echo "Too many files" 1>&2
+    exit 1
+fi
+
