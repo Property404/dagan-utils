@@ -42,7 +42,7 @@ class Database:
         """Remove key/value pair from database"""
         self.get_pairs().pop(key, None)
 
-    def set_value(self, key, value):
+    def store_value(self, key, value):
         """Set or change value associated with key"""
         self.data["pairs"][key] = value
 
@@ -66,7 +66,7 @@ def store(args):
     database = Database(DB_PATH)
     key = args.key
     value = args.value
-    database.set_value(key, value)
+    database.store_value(key, value)
 
 
 def get(args):
@@ -81,7 +81,7 @@ def rm_pair(args):
     database = Database(DB_PATH)
     key = args.key
     database.delete_pair(key)
-    print(f"Deleted {key} from database")
+    print(f"Deleted key '{key}' from database")
 
 
 def list_keys(_):
@@ -100,10 +100,10 @@ def main():
         parser.add_subparsers()
     )  # title="subcommands", description="valid subcommands", help=")
 
-    parser_set = subparsers.add_parser("set")
-    parser_set.add_argument("key", metavar="key", type=str, help="Key")
-    parser_set.add_argument("value", metavar="val", type=str, help="Value")
-    parser_set.set_defaults(func=store)
+    parser_store = subparsers.add_parser("store")
+    parser_store.add_argument("key", metavar="key", type=str, help="Key")
+    parser_store.add_argument("value", metavar="val", type=str, help="Value")
+    parser_store.set_defaults(func=store)
 
     parser_get = subparsers.add_parser("get")
     parser_get.add_argument("key", metavar="key", type=str, help="Key")
