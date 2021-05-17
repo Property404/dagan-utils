@@ -30,6 +30,11 @@ def main():
     if val is None:
         val = input()
 
+    # Commonly, the output of `peval` will result in a float. This should be
+    # ignored if it's a whole number
+    if val.endswith(".0"):
+        val = val[0 : val.find(".0")]
+
     if args.reverse:
         print(int(val, 16))
     else:
