@@ -20,12 +20,19 @@ def main():
         default=None,
         help="Expression to be evaluated",
     )
+    parser.add_argument(
+        "-x", "--hexadecimal", help="Hexadecimal format", action="store_true"
+    )
 
     args = parser.parse_args(sys.argv[1::])
 
     # pylint: disable=W0123
     val = eval(" ".join(args.expression))
-    print(val)
+
+    if args.hexadecimal:
+        print(hex(int(val)))
+    else:
+        print(val)
 
 
 if __name__ == "__main__":
