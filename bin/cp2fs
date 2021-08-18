@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+# Overlay a directory onto a file system
+set -e
+
+function main() {
+    if [ "$#" -lt 2 ]; then
+        echo "Not enough arguments"
+        echo "Usage: cp2fs <directory> <img file>"
+        return 1
+    fi
+
+    local -r overlay="${1}"
+    local -r image="${2}"
+
+    if ! [ -d "${overlay}" ]; then
+        echo "No such directory '${overlay}'"
+        return 1
+    fi
+
+    if ! [ -f "${image}" ]; then
+        echo "No such file '${image}'"
+        return 1
+    fi
+
+    echo "Overlaying ${overlay} onto ${image}"
+
+    local -r mount_point=$(mktemp -d -t fsoverlay_XXXXXX)
+    sudo mount "${image}"  "${mount_point}"
+    sudo rsync -a "$(realpath "${overlay}")/"  "${mount_point}/"
+    sudo umount "${mount_point}"
+    rmdir "${mount_point}"
+
+    echo "Finished"
+}
+
+main "${@}"
