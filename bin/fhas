@@ -25,32 +25,33 @@ def main():
     args = parser.parse_args(sys.argv[1::])
 
     big_file_name = args.big[0]
-    big_contents = open(big_file_name, "rb").read()
-    big_size = len(big_contents)
-    all_found = True
+    with open(big_file_name, "rb") as big_file:
+        big_contents = big_file.read()
+        big_size = len(big_contents)
+        all_found = True
 
-    for small_file_name in args.small:
-        try:
-            with open(small_file_name, "rb") as file:
-                small_contents = file.read()
-                small_size = len(small_contents)
-                if len(small_contents) > len(big_contents):
-                    print(
-                        f"Warning: '{small_file_name}' {small_size} is bigger"
-                        + f"than '{big_file_name}' ({big_size} bytes)"
-                    )
+        for small_file_name in args.small:
+            try:
+                with open(small_file_name, "rb") as small_file:
+                    small_contents = small_file.read()
+                    small_size = len(small_contents)
+                    if small_size > big_size:
+                        print(
+                            f"Warning: '{small_file_name}' {small_size} is bigger"
+                            + f"than '{big_file_name}' ({big_size} bytes)"
+                        )
 
-                findex = big_contents.find(small_contents)
-                if findex == -1:
-                    print(f"'{small_file_name}': Not found in '{big_file_name}'")
-                    all_found = False
-                else:
-                    print(
-                        f"'{small_file_name}': {hex(findex)} - {hex(findex+len(small_contents))}"
-                    )
-        except FileNotFoundError:
-            print(f"Error: no such file '{small_file_name}'", file=sys.stderr)
-            return 1
+                    findex = big_contents.find(small_contents)
+                    if findex == -1:
+                        print(f"'{small_file_name}': Not found in '{big_file_name}'")
+                        all_found = False
+                    else:
+                        print(
+                            f"'{small_file_name}': {hex(findex)} - {hex(findex+small_size)}"
+                        )
+            except FileNotFoundError:
+                print(f"Error: no such file '{small_file_name}'", file=sys.stderr)
+                return 1
 
     return 0 if all_found else 1
 
