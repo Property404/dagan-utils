@@ -1,0 +1,6 @@
+#!/bin/bash
+# Repeatedly run a command until it fails
+# By SO user "nneonneo" under the CA-BY-SA license
+# https://stackoverflow.com/questions/12967232/repeatedly-run-a-shell-command-until-it-fails
+while "$@"; do :; done
+
