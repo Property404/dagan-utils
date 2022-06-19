@@ -27,15 +27,15 @@ class Database:
             os.mkdir(KVS_DIR)
         # Load database (or create if not exists)
         if not os.path.isfile(path):
-            with open(path, "w+") as file:
+            with open(path, "w+", encoding="utf-8") as file:
                 file.write("""{"pairs":{}}""")
-        with open(path, "r") as file:
+        with open(path, "r", encoding="utf-8") as file:
             self.data = json.loads(file.read())
         self.path = path
 
     def save(self):
         """Save whole database to a file"""
-        with open(self.path, "w") as file:
+        with open(self.path, "w", encoding="utf-8") as file:
             file.write(json.dumps(self.data) + "\n")
 
     def delete_pair(self, key):
@@ -88,7 +88,7 @@ def list_keys(_):
     """List all keys in the local database"""
     database = Database(DB_PATH)
     pairs = database.get_pairs()
-    for key in pairs.keys():
+    for key in sorted(pairs.keys()):
         print(f"{key} {pairs[key]}")
 
 
