@@ -26,7 +26,7 @@ function main() {
 
     local -r mount_point=$(mktemp -d -t fsoverlay_XXXXXX)
     sudo mount "${image}"  "${mount_point}"
-    sudo rsync -r "$(realpath "${overlay}")/"  "${mount_point}/"
+    sudo rsync -rl "$(realpath "${overlay}")/"  "${mount_point}/"
     sudo umount "${mount_point}"
     rmdir "${mount_point}"
 
