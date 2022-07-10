@@ -29,8 +29,6 @@ function main() {
     sudo rsync -rl "$(realpath "${overlay}")/"  "${mount_point}/"
     sudo umount "${mount_point}"
     rmdir "${mount_point}"
-
-    echo "Finished"
 }
 
 main "${@}"
