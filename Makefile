@@ -7,5 +7,5 @@ lint:
 clean:
 	@:
 
-install: lint
+install:
 	cp bin/* ~/.local/bin/
