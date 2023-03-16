@@ -6,6 +6,10 @@ More concise than `python3 -c "print(...)"`
 import sys
 import argparse
 
+# This allows the user to use functions like log2
+# pylint: disable=W0614,W0401,W0622
+from math import *
+
 
 def main():
     """Main function"""
