@@ -1,3 +1,5 @@
+INSTALL_DIR=~/.local/bin/
+
 all: lint
 	@:
 
@@ -8,4 +10,5 @@ clean:
 	@:
 
 install:
-	cp bin/* ~/.local/bin/
+	mkdir -p ${INSTALL_DIR}
+	cp bin/* ${INSTALL_DIR}
