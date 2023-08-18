@@ -1,0 +1,31 @@
+#!/usr/bin/env python3
+"""
+Like sleep(1) but with output
+"""
+
+import sys
+import time
+import argparse
+
+
+def main():
+    """Main function"""
+    parser = argparse.ArgumentParser(description="Like sleep(1) but with output")
+    parser.add_argument("expression", metavar="E", type=str, nargs="?", default=None)
+
+    args = parser.parse_args(sys.argv[1::])
+
+    total_seconds = int(args.expression)
+
+    count = 0
+    space_length = len(str(total_seconds))
+    for count in range(0, total_seconds):
+        sys.stdout.write(f"{total_seconds-count}{' '*space_length}\r")
+        sys.stdout.flush()
+        time.sleep(1)
+    if total_seconds != 0:
+        print()
+
+
+if __name__ == "__main__":
+    main()
