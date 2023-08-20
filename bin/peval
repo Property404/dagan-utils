@@ -24,9 +24,14 @@ def main():
         default=None,
         help="Expression to be evaluated",
     )
-    parser.add_argument(
+    base_options = parser.add_mutually_exclusive_group()
+    base_options.add_argument(
         "-x", "--hexadecimal", help="Hexadecimal format", action="store_true"
     )
+    base_options.add_argument(
+        "-b", "--binary", help="Binary format", action="store_true"
+    )
+    base_options.add_argument("-o", "--octal", help="Octal format", action="store_true")
 
     args = parser.parse_args(sys.argv[1::])
 
@@ -35,6 +40,10 @@ def main():
 
     if args.hexadecimal:
         print(hex(int(val)))
+    elif args.binary:
+        print(bin(int(val)))
+    elif args.octal:
+        print(oct(int(val)))
     else:
         print(val)
 
