@@ -11,6 +11,6 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Install dependencies
-      run: sudo apt install moreutils black parallel shellcheck pylint
+      run: sudo apt install black shellcheck pylint
     - name: Lint scripts
       run: make lint

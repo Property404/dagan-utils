@@ -12,7 +12,7 @@ do_lints() {
 		# Run lint job and raise flag on failure
 		flag_name="/tmp/linter_err_flag_$((RANDOM))"
 		flags+=("$flag_name")
-		pee "chronic $method || touch $flag_name"&
+		bash -c "$method || touch $flag_name"&
 	done
 
 	for method in "${methods[@]}"; do
@@ -36,11 +36,11 @@ main() {
 	# Locate all files that need to be linted
 	for f in ./bin/*; do
 		# Python files
-		if head -n 1 "$f" | chronic grep 'python'; then
+		if head -n 1 "$f" | grep -q 'python'; then
 			python_files+=("$f")
 
 		# Shell files
-		elif head -n 1 "$f" | chronic grep 'sh$'; then
+		elif head -n 1 "$f" | grep -q 'sh$'; then
 			shell_files+=("$f")
 		else
 			echo "Can't lint unknown file type: $f"
@@ -54,9 +54,9 @@ main() {
 	# Shellcheck thinks this is unused
 	# shellcheck disable=SC2034
 	lints=(
-	"parallel shellcheck --color=always ::: ${shell_files[*]}"
-	"parallel black --check ::: ${python_files[*]}"
-	"parallel pylint ::: ${python_files[*]}"
+	"shellcheck --color=always ${shell_files[*]}"
+	"black --check ${python_files[*]}"
+	"pylint ${python_files[*]}"
 	)
 	do_lints lints
 }
