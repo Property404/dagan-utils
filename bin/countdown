@@ -46,11 +46,14 @@ def main():
 
     count = 0
     space_length = len(str(total_seconds))
-    for count in range(0, total_seconds):
-        sys.stdout.write(f"{total_seconds-count}{' '*space_length}\r")
-        sys.stdout.flush()
-        time.sleep(1)
-    if total_seconds != 0:
+    try:
+        for count in range(0, total_seconds):
+            sys.stdout.write(f"{total_seconds-count}{' '*space_length}\r")
+            sys.stdout.flush()
+            time.sleep(1)
+        if total_seconds != 0:
+            print()
+    except KeyboardInterrupt:
         print()
 
 
