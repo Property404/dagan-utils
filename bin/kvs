@@ -7,6 +7,7 @@ Simple CLI utility to store and retrieve key/value pairs
 import json
 import os
 import argparse
+import subprocess
 
 KVS_DIR = os.path.expanduser("~/.local/share/kvs/")
 DB_PATH = KVS_DIR + "kdb"
@@ -76,6 +77,21 @@ def get(args):
     print(database.get_value(key))
 
 
+def snip(args):
+    """Copy a value from the local database to the clipboard"""
+    database = Database(DB_PATH)
+    key = args.key
+    value = database.get_value(key)
+
+    if os.sys.platform == "darwin":
+        commands = ["pbcopy"]
+    elif os.environ.get("XDG_SESSION_TYPE") == "wayland":
+        commands = ["wl-copy", "-n"]
+    else:
+        commands = ["xsel", "-b"]
+    subprocess.run(commands, input=value.encode(), check=True)
+
+
 def rm_pair(args):
     """Delete a key/value pair from the local database"""
     database = Database(DB_PATH)
@@ -108,6 +124,10 @@ def main():
     parser_get = subparsers.add_parser("get")
     parser_get.add_argument("key", metavar="key", type=str, help="Key")
     parser_get.set_defaults(func=get)
+
+    parser_get = subparsers.add_parser("snip")
+    parser_get.add_argument("key", metavar="key", type=str, help="Key")
+    parser_get.set_defaults(func=snip)
 
     parser_get = subparsers.add_parser("rm")
     parser_get.add_argument("key", metavar="key", type=str, help="Key")
