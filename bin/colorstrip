@@ -1,9 +1,21 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 # Strips colors from output
 do_strip() {
+    local sed_program="sed"
+
+    # GNU Sed is needed for this script - make sure we have that
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+        sed_program="gsed"
+    fi
+
+    if ! command -v "$sed_program" > /dev/null; then
+        echo "colostrip: error: missing \`${sed_program}\`"
+        return 1
+    fi
+
     # By SO user 'meustrus' under the CC-BY-SA license
     # https://stackoverflow.com/a/51141872
-    sed 's/\x1B[@A-Z\\\]^_]\|\x1B\[[0-9:;<=>?]*[-!"#$%&'"'"'()*+,.\/]*[][\\@A-Z^_`a-z{|}~]//g'
+    "$sed_program" 's/\x1B[@A-Z\\\]^_]\|\x1B\[[0-9:;<=>?]*[-!"#$%&'"'"'()*+,.\/]*[][\\@A-Z^_`a-z{|}~]//g'
 }
 
 if [ "$#" -eq 0 ]; then
