@@ -8,14 +8,41 @@ import time
 import argparse
 
 
+def parse_to_seconds(expr):
+    "Parse expression into seconds"
+    total = 0
+    current = 0
+    last_char_was_digit = False
+    modifiers = {"s": 1, "m": 60, "h": 3600, "d": 3600 * 24}
+    for char in expr:
+        if char.isdigit():
+            current = current * 10 + int(char)
+            last_char_was_digit = True
+        elif char in modifiers:
+            if not last_char_was_digit:
+                print(f"Unexpected modifier: '{char}'", file=sys.stderr)
+                sys.exit(1)
+            total += current * modifiers[char]
+            current = 0
+            last_char_was_digit = False
+        else:
+            # Allow spacing like "1m 1s", but not "1 1"
+            if char == " " and not last_char_was_digit:
+                continue
+            print(f"Invalid time modifier: '{char}'", file=sys.stderr)
+            sys.exit(1)
+    total += current
+    return total
+
+
 def main():
     """Main function"""
     parser = argparse.ArgumentParser(description="Like sleep(1) but with output")
-    parser.add_argument("expression", metavar="E", type=str, nargs="?", default=None)
+    parser.add_argument("expression", metavar="E", type=str, nargs="+", default=None)
 
     args = parser.parse_args(sys.argv[1::])
 
-    total_seconds = int(args.expression)
+    total_seconds = parse_to_seconds(" ".join(args.expression))
 
     count = 0
     space_length = len(str(total_seconds))
