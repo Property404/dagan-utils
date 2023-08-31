@@ -1,4 +1,10 @@
 #!/usr/bin/env bash
+# Convert to title case format
+#
+# Example:
+#   echo "you and me" | titlecase
+#   You and Me
+
 main() {
     # From https://stackoverflow.com/questions/35006611/how-to-convert-text-following-title-case-rules-in-bash
     # CC-BY-SA 3.0 by SO user Jas

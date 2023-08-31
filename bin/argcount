@@ -1,2 +1,13 @@
 #!/usr/bin/env bash
+# Count the number of arguments to this program, excluding argv[0]
+# (in other words, argc - 1)
+#
+# This can be used with wildcards to quickly determine how many files there are
+# matching a given wildcard pattern:
+#
+# Example:
+#   argcount *.img
+#   4
+#
+# The above example shows that there are four files ending with ".img"
 echo "$#"
