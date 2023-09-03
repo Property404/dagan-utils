@@ -3,9 +3,9 @@
 
 # Launch an array of actions in the background and wait for them
 do_lints() {
-	declare -n methods="$1"
+	local -n methods="$1"
 	# Keep a list of flags to detect which job failed/passed
-	declare -a flags;
+	local -a flags;
 
 	for method in "${methods[@]}"; do
 		echo "$method"
@@ -30,8 +30,8 @@ do_lints() {
 }
 
 main() {
-	declare -a python_files;
-	declare -a shell_files;
+	local -a python_files;
+	local -a shell_files;
 
 	# Locate all files that need to be linted
 	for f in ./bin/*; do
