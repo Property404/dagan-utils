@@ -7,6 +7,11 @@ import sys
 import time
 import argparse
 
+# Clears the line before printing
+# \r Move the cursor to the beginning
+# \x1b[0K is an ANSI code to clear from cursor to end of line
+CLEAR = "\r\x1b[0K"
+
 
 def parse_to_seconds(expr):
     "Parse expression into seconds"
@@ -44,17 +49,16 @@ def main():
 
     total_seconds = parse_to_seconds(" ".join(args.expression))
 
-    count = 0
-    space_length = len(str(total_seconds))
     try:
+        count = 0
         for count in range(0, total_seconds):
-            sys.stdout.write(f"{total_seconds-count}{' '*space_length}\r")
+            sys.stdout.write(f"{CLEAR}{total_seconds-count}")
             sys.stdout.flush()
             time.sleep(1)
-        if total_seconds != 0:
-            print()
     except KeyboardInterrupt:
-        print()
+        print(f"{CLEAR}Interrupted")
+        return
+    print(f"{CLEAR}Done")
 
 
 if __name__ == "__main__":
