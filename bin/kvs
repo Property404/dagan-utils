@@ -74,7 +74,11 @@ def get(args):
     """Get a key/value pair from the local database"""
     database = Database(DB_PATH)
     key = args.key
-    print(database.get_value(key))
+    os.sys.stdout.write(database.get_value(key))
+    if args.no_newline:
+        os.sys.stdout.flush()
+    else:
+        print()
 
 
 def snip(args):
@@ -122,6 +126,9 @@ def main():
     parser_store.set_defaults(func=store)
 
     parser_get = subparsers.add_parser("get")
+    parser_get.add_argument(
+        "-n", "--no-newline", help="Do not print newline", action="store_true"
+    )
     parser_get.add_argument("key", metavar="key", type=str, help="Key")
     parser_get.set_defaults(func=get)
 
