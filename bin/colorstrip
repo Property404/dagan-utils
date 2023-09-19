@@ -29,18 +29,32 @@ $USAGE
 
 Help:
     -i          Strip in place
+    -p, --pipe  Only strip if piped
     -h, --help	Display this message"
 
     local in_place
+    local only_if_piped
     while true; do
         case "$1" in
             -i ) in_place=1; shift ;;
+            -p | --pipe ) only_if_piped=1; shift ;;
             -h | --help ) echo "$HELP"; return 0 ;;
             -- ) shift; break ;;
             -* ) echo -e "Unrecognized option: $1\n$USAGE" >&2; return 1 ;;
             * ) break ;;
         esac
     done
+
+    # When -p is specified, this program is just `cat` unless piped
+    if [[ -n "${only_if_piped}" ]]; then
+        if [[ -n "${in_place}" ]]; then
+            echo -e "\`-i\` and \`-p\` are incompatible\n$USAGE" >&2
+            return 1
+        elif [[ -t 1 ]]; then
+            cat "${@}"
+            return 0
+        fi
+    fi
 
     if [ "$#" -eq 0 ]; then
         if [[ -n "${in_place}" ]]; then
