@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 # Strips colors from output
+
+set -e
+
 do_strip() {
     local sed_program="sed"
 
@@ -9,7 +12,7 @@ do_strip() {
     fi
 
     if ! command -v "$sed_program" > /dev/null; then
-        echo "colostrip: error: missing \`${sed_program}\`"
+        echo "colorstrip: error: missing \`${sed_program}\`"
         return 1
     fi
 
@@ -18,12 +21,49 @@ do_strip() {
     "$sed_program" 's/\x1B[@A-Z\\\]^_]\|\x1B\[[0-9:;<=>?]*[-!"#$%&'"'"'()*+,.\/]*[][\\@A-Z^_`a-z{|}~]//g'
 }
 
-if [ "$#" -eq 0 ]; then
-    do_strip
-elif [ "$#" -eq 1 ]; then
-    do_strip < "$1"
-else
-    echo "Too many files" 1>&2
-    exit 1
-fi
+main() {
+    local -r USAGE="Usage: $(basename "${0}") [-i] [<files>]"
+    local -r HELP="Strip colors from output
 
+$USAGE
+
+Help:
+    -i          Strip in place
+    -h, --help	Display this message"
+
+    local in_place
+    while true; do
+        case "$1" in
+            -i ) in_place=1; shift ;;
+            -h | --help ) echo "$HELP"; return 0 ;;
+            -- ) shift; break ;;
+            -* ) echo -e "Unrecognized option: $1\n$USAGE" >&2; return 1 ;;
+            * ) break ;;
+        esac
+    done
+
+    if [ "$#" -eq 0 ]; then
+        if [[ -n "${in_place}" ]]; then
+            echo -e "\`-i\` option given, but no file specified\n$USAGE" >&2
+            return 1
+        fi
+        do_strip
+        return 0
+    fi
+
+    if [[ -n "${in_place}" ]]; then
+        local -r temp="$(mktemp)"
+        for file in "$@"; do
+            do_strip < "$file" > "$temp"
+            cat "$temp" > "$file"
+        done
+        rm "$temp"
+        return 0
+    fi
+
+    for file in "$@"; do
+        do_strip < "$file"
+    done
+}
+
+main "${@}"
