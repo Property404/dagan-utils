@@ -57,6 +57,7 @@ main() {
 	"shellcheck --color=always ${shell_files[*]}"
 	"black --check ${python_files[*]}"
 	"pylint ${python_files[*]}"
+	"./bin/wslint ${shell_files[*]} ${python_files[*]}"
 	)
 	do_lints lints
 }

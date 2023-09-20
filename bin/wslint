@@ -1,0 +1,79 @@
+#!/usr/bin/env bash
+# Generic whitespace linting
+
+set -e
+
+main() {
+    local -r USAGE="Usage: $(basename "${0}") [-i] [<files>]"
+    local -r HELP="Lints file for (typically) unneeded whitespace
+
+$USAGE
+
+Help:
+    -h, --help	Display this message"
+
+    local fix
+    while true; do
+        case "$1" in
+            -f | --fix) fix=1; shift ;;
+            -h | --help ) echo "$HELP"; return 0 ;;
+            -- ) shift; break ;;
+            -* ) echo -e "Unrecognized option: $1\n$USAGE" >&2; return 1 ;;
+            * ) break ;;
+        esac
+    done
+
+    if [[ -z "$1" ]]; then
+        echo -e "No files given\n$USAGE" >&2
+        return 1
+    fi
+
+    local fail
+    for file in "$@"; do
+        if [[ ! -e "${file}" ]]; then
+            echo "No such file: '${file}'" >&2
+            return 1
+        fi
+
+        if [[ ! -f "${file}" ]]; then
+            echo "'${file}' is not a file, skipping"
+            continue
+        fi
+
+        # Check for whitespace at end of line
+        if grep -q '\s$' "${file}"; then
+            echo "File '${file}': Whitespace at end of line:"
+            grep -n '\s$' "${file}" | sed 's/^/\t/g'
+            if [[ -n "${fix}" ]]; then
+                sed -i 's/\s$//g' "${file}"
+            fi
+            fail=1
+        fi
+
+        # Check for newline at end
+        if [[ -s "${file}" && -n "$(tail -c 1 "${file}")" ]]; then
+            echo "File '${file}': No newline at end"
+            if [[ -n "${fix}" ]]; then
+                sed -i "\$a\\" "${file}"
+            fi
+            fail=1
+        fi
+
+        # Check for extra ending newlines
+        if [[ -s "${file}" && -z "$(tail -n 1 "${file}")" ]]; then
+            echo "File '${file}': Extra newlines at end"
+            if [[ -n "${fix}" ]]; then
+                while  [[ -z "$(tail -n 1 "${file}")" ]]; do
+                    truncate -s -1 "${file}"
+                done
+            fi
+            fail=1
+        fi
+    done
+
+    if [[ -n "${fail}" ]]; then
+        return 1
+    fi
+}
+
+main "${@}"
