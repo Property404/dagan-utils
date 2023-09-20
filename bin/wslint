@@ -28,6 +28,17 @@ Help:
         return 1
     fi
 
+    # GNU Sed is needed for this script - make sure we have that
+    local sed="sed"
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+        sed="gsed"
+    fi
+
+    if ! command -v "$sed" > /dev/null; then
+        echo "$(basename "${0}"): error: missing \`${sed}\`"
+        return 1
+    fi
+
     local fail
     for file in "$@"; do
         if [[ ! -f "${file}" ]]; then
@@ -47,9 +58,9 @@ Help:
         # Check for whitespace at end of line
         if grep -q '\s$' "${file}"; then
             echo "File '${file}': Whitespace at end of line:"
-            grep -n '\s$' "${file}" | sed 's/^/\t/g'
+            grep -n '\s$' "${file}" | "${sed}" 's/^/\t/g'
             if [[ -n "${fix}" ]]; then
-                sed -i 's/\s\+$//g' "${file}"
+                "${sed}" -i 's/\s\+$//g' "${file}"
             fi
             fail=1
         fi
@@ -58,7 +69,7 @@ Help:
         if [[ -s "${file}" && -n "$(tail -c 1 "${file}")" ]]; then
             echo "File '${file}': No newline at end"
             if [[ -n "${fix}" ]]; then
-                sed -i "\$a\\" "${file}"
+                "${sed}" -i "\$a\\" "${file}"
             fi
             fail=1
         fi
