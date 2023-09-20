@@ -30,13 +30,17 @@ Help:
 
     local fail
     for file in "$@"; do
-        if [[ ! -e "${file}" ]]; then
-            echo "No such file: '${file}'" >&2
-            return 1
+        if [[ ! -f "${file}" ]]; then
+            if [[ ! -e "${file}" ]]; then
+                echo "No such file: '${file}'" >&2
+                return 1
+            fi
+            echo "'${file}' is not a file, skipping"
+            continue
         fi
 
-        if [[ ! -f "${file}" ]]; then
-            echo "'${file}' is not a file, skipping"
+        if grep -q 'charset=binary' <(file --mime "${file}"); then
+            echo "'${file}' looks like a binary, skipping"
             continue
         fi
 
