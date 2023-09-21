@@ -1,46 +1,93 @@
 [
   {
-    "run": "nato dagan",
-    "output": "DELTA ALFA GOLF ALFA NOVEMBER"
+    "run": "echo dagan | nato",
+    "stdout": "DELTA ALFA GOLF ALFA NOVEMBER"
   },
   {
     "run": "nato da gan",
-    "output": "DELTA ALFA SPACE GOLF ALFA NOVEMBER"
+    "stdout": "DELTA ALFA SPACE GOLF ALFA NOVEMBER"
+  },
+  {
+    "files": {
+      "good_file": "Hello world!\n",
+      "no_newline": "Hello world!",
+      "space_at_end": "Hello world! \n",
+      "too_many_newlines": "Hello world!\n\n"
+    },
+    "cases": [
+      {
+        "run": "wslint good_file > /dev/null && echo ok",
+        "stdout": "ok"
+      },
+      {
+        "run": "wslint no_newline > /dev/null || echo fail",
+        "stdout": "fail"
+      },
+      {
+        "run": "wslint space_at_end > /dev/null || echo fail",
+        "stdout": "fail"
+      },
+      {
+        "run": "wslint too_many_newlines > /dev/null || echo fail",
+        "stdout": "fail"
+      }
+    ]
+  },
+  {
+    "files": {
+      "zero": "",
+      "one": "a",
+      "six": "hello\n"
+    },
+    "cases": [
+      {
+        "run": "fsize zero",
+        "stdout": "0"
+      },
+      {
+        "run": "fsize one",
+        "stdout": "1"
+      },
+      {
+        "run": "fsize six",
+        "stdout": "6"
+      }
+    ]
   },
   {
     "run": "echo -e \"\\e[31mHello World\\e[0m\" | colorstrip",
-    "output": "Hello World"
+    "stdout": "Hello World"
   },
   {
     "run": "echo hello world | titlecase",
-    "output": "Hello World"
+    "stdout": "Hello World"
   },
   {
     "run": "peval 1+1",
-    "output": "2"
+    "stdout": "2"
   },
   {
     "run": "peval -x 1+1",
-    "output": "0x2"
+    "stdout": "0x2"
   },
   {
     "run": "dec2hex 32",
-    "output": "0x20"
+    "stdout": "0x20"
   },
   {
     "run": "hex2dec 20",
-    "output": "32"
+    "stdout": "32"
   },
   {
     "run": "argcount",
-    "output": "0"
+    "stdout": "0"
   },
   {
     "run": "argcount hi",
-    "output": "1"
+    "stdout": "1"
   },
   {
     "run": "argcount hi there",
-    "output": "2"
+    "stdout": "2"
   }
 ]
