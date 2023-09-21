@@ -4,6 +4,7 @@
 !bin/*
 !*.md
 !*.sh
+!*.json
 !.github/**/*.yml
 !.github/**/*.yaml
 !Makefile

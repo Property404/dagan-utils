@@ -1,0 +1,46 @@
+[
+  {
+    "run": "nato dagan",
+    "output": "DELTA ALFA GOLF ALFA NOVEMBER"
+  },
+  {
+    "run": "nato da gan",
+    "output": "DELTA ALFA SPACE GOLF ALFA NOVEMBER"
+  },
+  {
+    "run": "echo -e \"\\e[31mHello World\\e[0m\" | colorstrip",
+    "output": "Hello World"
+  },
+  {
+    "run": "echo hello world | titlecase",
+    "output": "Hello World"
+  },
+  {
+    "run": "peval 1+1",
+    "output": "2"
+  },
+  {
+    "run": "peval -x 1+1",
+    "output": "0x2"
+  },
+  {
+    "run": "dec2hex 32",
+    "output": "0x20"
+  },
+  {
+    "run": "hex2dec 20",
+    "output": "32"
+  },
+  {
+    "run": "argcount",
+    "output": "0"
+  },
+  {
+    "run": "argcount hi",
+    "output": "1"
+  },
+  {
+    "run": "argcount hi there",
+    "output": "2"
+  }
+]

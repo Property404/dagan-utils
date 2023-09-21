@@ -1,5 +1,5 @@
 ---
-name: Lint
+name: Lint and Test
 
 on: [push, pull_request]
 
@@ -11,6 +11,8 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Install dependencies
-      run: sudo apt install black shellcheck pylint
+      run: sudo apt install black shellcheck pylint jq
     - name: Lint scripts
       run: make lint
+    - name: Run tests
+      run: make test

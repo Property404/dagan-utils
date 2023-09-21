@@ -6,6 +6,9 @@ all: lint
 lint:
 	./lint.sh
 
+test:
+	./test.sh
+
 clean:
 	@:
 
