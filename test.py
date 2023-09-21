@@ -29,7 +29,7 @@ def main():
         cases = json.loads(file.read())
 
     cwd = os.getcwd()
-    os.environ["PATH"] += f"{cwd}/bin/"
+    os.environ["PATH"] += f":{cwd}/bin/"
 
     count = 0
     for case in cases:
