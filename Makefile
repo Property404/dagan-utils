@@ -7,7 +7,7 @@ lint:
 	./lint.sh
 
 test:
-	./test.sh
+	./test.py
 
 clean:
 	@:

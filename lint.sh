@@ -49,7 +49,8 @@ main() {
 	done
 
 	# Lint self, too
-	shell_files+=( "$0" "test.sh" )
+	shell_files+=( "$0" )
+	python_files+=( "test.py" )
 
 	# Shellcheck thinks this is unused
 	# shellcheck disable=SC2034

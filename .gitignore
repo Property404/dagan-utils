@@ -4,6 +4,7 @@
 !bin/*
 !*.md
 !*.sh
+!*.py
 !*.json
 !.github/**/*.yml
 !.github/**/*.yaml
