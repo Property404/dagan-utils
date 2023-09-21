@@ -12,24 +12,29 @@
       "good_file": "Hello world!\n",
       "no_newline": "Hello world!",
       "space_at_end": "Hello world! \n",
-      "too_many_newlines": "Hello world!\n\n"
+      "too_many_newlines": "Hello world!\n\n",
+      "many_spaces_at_end": "Hello world!      \n"
     },
     "cases": [
       {
-        "run": "wslint good_file > /dev/null && echo ok",
-        "stdout": "ok"
+        "run": "wslint good_file",
+        "exit": 0
       },
       {
-        "run": "wslint no_newline > /dev/null || echo fail",
-        "stdout": "fail"
+        "run": "wslint no_newline",
+        "exit": 1
       },
       {
-        "run": "wslint space_at_end > /dev/null || echo fail",
-        "stdout": "fail"
+        "run": "wslint space_at_end",
+        "exit": 1
       },
       {
-        "run": "wslint too_many_newlines > /dev/null || echo fail",
-        "stdout": "fail"
+        "run": "wslint too_many_newlines",
+        "exit": 1
+      },
+      {
+        "run": "wslint -f * || wslint *",
+        "exit": 0
       }
     ]
   },
@@ -51,6 +56,10 @@
       {
         "run": "fsize six",
         "stdout": "6"
+      },
+      {
+        "run": "fsize this-file-dont-exist",
+        "exit": "1"
       }
     ]
   },
