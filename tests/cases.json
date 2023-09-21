@@ -102,5 +102,25 @@
   {
     "run": "argcount hi there",
     "stdout": "2"
+  },
+  {
+    "files": {
+      "file1": "bulbasaur\n",
+      "file2": "koffing\n"
+    },
+    "cases": [
+      {
+        "run": "fswap file1 file2",
+        "exit": "0"
+      },
+      {
+        "run": "cat file1",
+        "stdout": "koffing"
+      },
+      {
+        "run": "cat file2",
+        "stdout": "bulbasaur"
+      }
+    ]
   }
 ]
