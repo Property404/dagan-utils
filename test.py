@@ -45,8 +45,8 @@ def main():
                     file.write(bytes(contents.encode("ascii")))
 
         if "cases" in case:
-            for case in case["cases"]:
-                run_testcase(case)
+            for subcase in case["cases"]:
+                run_testcase(subcase)
         else:
             run_testcase(case)
 
