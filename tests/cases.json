@@ -122,5 +122,25 @@
         "stdout": "bulbasaur"
       }
     ]
+  },
+  {
+    "files": {
+      "file1": "hello world",
+      "file2": "hello"
+    },
+    "cases": [
+      {
+        "run": "fhas file1 file2",
+        "exit": "0"
+      },
+      {
+        "run": "fhas file1 file1",
+        "exit": "0"
+      },
+      {
+        "run": "fhas file2 file1",
+        "exit": "1"
+      }
+    ]
   }
 ]
