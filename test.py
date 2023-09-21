@@ -8,10 +8,10 @@ import sys
 import tempfile
 
 
-def run_testcase(case):
+def run_testcase(testcase):
     """Run a single testcase"""
-    expected_stdout = bytes(case["stdout"] + "\n", "ascii")
-    command = case["run"]
+    expected_stdout = bytes(testcase["stdout"] + "\n", "ascii")
+    command = testcase["run"]
     commands = ["bash", "-c", command]
     result = subprocess.run(commands, check=True, capture_output=True)
     if expected_stdout != result.stdout:
