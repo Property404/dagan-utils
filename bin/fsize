@@ -12,21 +12,33 @@ def main():
 
     parser = argparse.ArgumentParser(description="Print the file size in bytes")
     parser.add_argument(
-        "file", metavar="F", type=str, nargs="+", default=None, help="Target file"
+        "files", metavar="F", type=str, nargs="+", default=None, help="Target files"
     )
     parser.add_argument(
-        "-x", "--hexadecimal", help="Hexadecimal format", action="store_true"
+        "-x",
+        "--hexadecimal",
+        help="Hexadecimal format",
+        action="store_true",
+    )
+    parser.add_argument(
+        "-n",
+        "--name",
+        help="Print names",
+        action="store_true",
     )
 
     args = parser.parse_args(sys.argv[1::])
 
-    for file_name in args.file:
+    for file_name in args.files:
         try:
             size = os.path.getsize(file_name)
             if args.hexadecimal:
-                print(hex(size))
+                line = hex(size)
             else:
-                print(size)
+                line = str(size)
+            if args.name:
+                line += f" {file_name}"
+            print(line)
         except FileNotFoundError:
             print(f"Error: No such file '{file_name}'", file=sys.stderr)
             sys.exit(1)

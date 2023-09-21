@@ -58,6 +58,10 @@
         "stdout": "6"
       },
       {
+        "run": "fsize -n six",
+        "stdout": "6 six"
+      },
+      {
         "run": "fsize this-file-dont-exist",
         "exit": "1"
       }
