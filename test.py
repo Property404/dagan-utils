@@ -43,6 +43,7 @@ def run_testcase(testcase):
         print("Failed")
         print(f"\tCommand: {command}")
         print(f"\tStatus: {result.returncode}")
+        sys.exit(1)
 
     if not valid:
         print("Test case does not test anything!")
