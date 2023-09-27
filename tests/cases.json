@@ -1,11 +1,15 @@
 [
   {
-    "run": "echo dagan | nato",
-    "stdout": "DELTA ALFA GOLF ALFA NOVEMBER"
-  },
-  {
-    "run": "nato da gan",
-    "stdout": "DELTA ALFA SPACE GOLF ALFA NOVEMBER"
+    "cases": [
+      {
+        "run": "echo dagan | nato",
+        "stdout": "DELTA ALFA GOLF ALFA NOVEMBER"
+      },
+      {
+        "run": "nato da gan",
+        "stdout": "DELTA ALFA SPACE GOLF ALFA NOVEMBER"
+      }
+    ]
   },
   {
     "files": {

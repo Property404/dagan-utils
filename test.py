@@ -8,9 +8,17 @@ import sys
 import tempfile
 
 
-def run_testcase(testcase):
-    """Run a single testcase"""
-    command = testcase["run"]
+def fail(info):
+    """Indicate a test case failed"""
+    print("Test failed")
+    for (key, value) in info:
+        print(f"\t{key}: {value}")
+    sys.exit(1)
+
+
+def run_test_case(test_case):
+    """Run a single test case"""
+    command = test_case["run"]
     commands = ["bash", "-c", command]
 
     try:
@@ -20,63 +28,59 @@ def run_testcase(testcase):
     except Exception as exception:
         raise exception
 
-    if "stdout" in testcase:
-        valid = True
-        expected_stdout = bytes(testcase["stdout"] + "\n", "ascii")
+    if "stdout" in test_case:
+        expected_stdout = bytes(test_case["stdout"] + "\n", "ascii")
         if expected_stdout != result.stdout:
-            print("Failed")
-            print(f"\tCommand: {command}")
-            print(f"\tExpected: {expected_stdout}")
-            print(f"\tActual: {result.stdout}")
-            sys.exit(1)
+            fail(
+                {
+                    "Command": command,
+                    "Expected": expected_stdout,
+                    "Actual": result.stdout,
+                }
+            )
 
-    if "exit" in testcase:
-        valid = True
-        expected_exit_status = int(testcase["exit"])
-        if expected_exit_status != result.returncode:
-            print("Failed")
-            print(f"\tCommand: {command}")
-            print(f"\tExpected status: {expected_exit_status}")
-            print(f"\tActual status: {result.returncode}")
-            sys.exit(1)
-    elif result.returncode != 0:
-        print("Failed")
-        print(f"\tCommand: {command}")
-        print(f"\tStatus: {result.returncode}")
-        sys.exit(1)
+    if "exit" in test_case:
+        expected_exit_status = int(test_case["exit"])
+    else:
+        expected_exit_status = 0
 
-    if not valid:
-        print("Test case does not test anything!")
-        sys.exit(1)
+    if expected_exit_status != result.returncode:
+        fail(
+            {
+                "Command": command,
+                "Expected status": expected_exit_status,
+                "Actual status": result.returncode,
+            }
+        )
 
 
 def main():
     """Main function"""
 
     with open("tests/cases.json", encoding="utf-8") as file:
-        cases = json.loads(file.read())
+        tests = json.loads(file.read())
 
     cwd = os.getcwd()
     os.environ["PATH"] = f"{cwd}/bin/:{os.environ['PATH']}"
 
     count = 0
-    for case in cases:
+    for test in tests:
         tempdir = tempfile.mkdtemp()
         os.chdir(tempdir)
 
         files = []
-        if "files" in case:
-            files = case["files"]
+        if "files" in test:
+            files = test["files"]
             for filename in files:
                 with open(filename, "wb") as file:
                     contents = files[filename]
                     file.write(bytes(contents.encode("ascii")))
 
-        if "cases" in case:
-            for subcase in case["cases"]:
-                run_testcase(subcase)
+        if "cases" in test:
+            for case in test["cases"]:
+                run_test_case(case)
         else:
-            run_testcase(case)
+            run_test_case(test)
 
         for file in files:
             os.unlink(file)
