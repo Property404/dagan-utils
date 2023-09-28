@@ -6,12 +6,13 @@ import os
 import subprocess
 import sys
 import tempfile
+import time
 
 
 def fail(info):
     """Indicate a test case failed"""
     print("Test failed")
-    for (key, value) in info:
+    for (key, value) in info.items():
         print(f"\t{key}: {value}")
     sys.exit(1)
 
@@ -21,12 +22,14 @@ def run_test_case(test_case):
     command = test_case["run"]
     commands = ["bash", "-c", command]
 
+    start_time = time.time()
     try:
         result = subprocess.run(commands, check=True, capture_output=True)
     except subprocess.CalledProcessError as exc:
         result = exc
     except Exception as exception:
         raise exception
+    elapsed_time = time.time() - start_time
 
     if "stdout" in test_case:
         expected_stdout = bytes(test_case["stdout"] + "\n", "ascii")
@@ -50,6 +53,20 @@ def run_test_case(test_case):
                 "Command": command,
                 "Expected status": expected_exit_status,
                 "Actual status": result.returncode,
+            }
+        )
+
+    if "max_time" in test_case:
+        max_time = test_case["max_time"]
+    else:
+        max_time = 1
+
+    if elapsed_time > max_time:
+        fail(
+            {
+                "Command": command,
+                "Elapsed time": f"{elapsed_time}s",
+                "Max elapsed time": f"{max_time}s",
             }
         )
 
