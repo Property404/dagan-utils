@@ -3,11 +3,15 @@
     "cases": [
       {
         "run": "echo dagan | nato",
-        "stdout": "DELTA ALFA GOLF ALFA NOVEMBER"
+        "stdout": "Delta Alfa Golf Alfa November"
       },
       {
         "run": "nato da gan",
-        "stdout": "DELTA ALFA SPACE GOLF ALFA NOVEMBER"
+        "stdout": "Delta Alfa Space Golf Alfa November"
+      },
+      {
+        "run": "echo {0..1000} | nato",
+        "max_time": 1
       }
     ]
   },

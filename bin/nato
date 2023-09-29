@@ -1,131 +1,162 @@
-#!/usr/bin/env bash
-# Translate text to NATO phonetic alphabet
-# https://en.wikipedia.org/wiki/NATO_phonetic_alphabet
+#!/usr/bin/env python3
+"""
+Translate text to NATO phonetic alphabet
+<https://en.wikipedia.org/wiki/NATO_phonetic_alphabet>
 
-set -e
-
-declare -r CODEBOOK="A.ALFA
-B.BRAVO
-C.CHARLIE
-D.DELTA
-E.ECHO
-F.FOXTROT
-G.GOLF
-H.HOTEL
-I.INDIA
-J.JULIETT
-K.KILO
-L.LIMA
-M.MIKE
-N.NOVEMBER
-O.OSCAR
-P.PAPA
-Q.QUEBEC
-R.ROMEO
-S.SIERRA
-T.TANGO
-U.UNIFORM
-V.VICTOR
-W.WHISKEY
-X.XRAY
-Y.YANKEE
-Z.ZULU"
-declare -r SYMBOL_BOOK=" .SPACE
-DOT.DOT
--.DASH
-_.UNDERSCORE
-*.STAR
-&.AMPERSAND
-$.DOLLAR_SIGN
-:.COLON
-;.SEMICOLON
-'.SINGLE_QUOTE
-\".DOUBLE_QUOTE
-=.EQUALS_SIGN
-#.POUND
-{.OPENING_CURLY_BRACKET
-}.CLOSING_CURLY_BRACKET
-[.OPENING_SQUARE_BRACKET
-].CLOSING_SQUARE_BRACKET
-<.LESS_THAN_SIGN
->.GREATER_THAN_SIGN
-+.PLUS
-(.OPENING_PARENTHESIS
-).CLOSING_PARENTHESIS
-/.FORWARD_SLASH
-\\.BACK_SLASH
-@.AT"
-declare -r NUMBER_BOOK="1.ONE
-2.TWO
-3.THREE
-4.FOUR
-5.FIVE
-6.SIX
-7.SEVEN
-8.EIGHT
-9.NINE"
-
-nato() {
-    local -r text=$(echo "${@}" | tr '[:lower:]' '[:upper:]')
-    local color_main
-    local color_reset
-    if [[ -t 1 ]]; then
-        color_main="\e[32m"
-        color_reset="\e[0m"
-    fi
+The primary purpose of the script is to communicate spelling of names, emails,
+etc over the phone.
+"""
 
 
-    local char
-    local codeline
-    for (( i=0; i<${#text}; i++ )); do
-        char="${text:$i:1}"
-        if [[ "$i" -ne 0 ]]; then
-            echo -n " "
-        fi
-        if [[ "${char}" == "." ]]; then
-            char="DOT"
-        fi
-        if codeline=$(echo "${CODEBOOK}" | grep "^${char}\."); then
-            echo -en "${color_main}"
-            echo "${codeline}" | cut -f2 -d'.' | tr -d '\012\015'
-            echo -en "${color_reset}"
-        elif codeline=$(echo "${SYMBOL_BOOK}" | grep "^${char}\."); then
-            echo "${codeline}" | cut -f2 -d'.' | tr -d '\012\015'
-        elif codeline=$(echo "${NUMBER_BOOK}" | grep "^${char}\."); then
-            echo "${codeline}" | cut -f2 -d'.' | tr -d '\012\015'
-        else
-            echo -n "$char"
-        fi
-    done
-    echo
+import sys
+import argparse
+
+CODEBOOK = {
+    "A": "ALFA",
+    "B": "BRAVO",
+    "C": "CHARLIE",
+    "D": "DELTA",
+    "E": "ECHO",
+    "F": "FOXTROT",
+    "G": "GOLF",
+    "H": "HOTEL",
+    "I": "INDIA",
+    "J": "JULIETT",
+    "K": "KILO",
+    "L": "LIMA",
+    "M": "MIKE",
+    "N": "NOVEMBER",
+    "O": "OSCAR",
+    "P": "PAPA",
+    "Q": "QUEBEC",
+    "R": "ROMEO",
+    "S": "SIERRA",
+    "T": "TANGO",
+    "U": "UNIFORM",
+    "V": "VICTOR",
+    "W": "WHISKEY",
+    "X": "XRAY",
+    "Y": "YANKEE",
+    "Z": "ZULU",
+}
+WHITESPACE_BOOK = {
+    " ": "SPACE",
+    "\t": "TAB",
+}
+SYMBOL_BOOK = {
+    ".": "DOT",
+    ",": "COMMA",
+    "-": "DASH",
+    "_": "UNDERSCORE",
+    "*": "STAR",
+    "&": "AMPERSAND",
+    "$": "DOLLAR_SIGN",
+    ":": "COLON",
+    ";": "SEMICOLON",
+    "'": "SINGLE_QUOTE",
+    '"': "DOUBLE_QUOTE",
+    "=": "EQUALS_SIGN",
+    "#": "POUND",
+    "{": "OPENING_CURLY_BRACKET",
+    "}": "CLOSING_CURLY_BRACKET",
+    "[": "OPENING_SQUARE_BRACKET",
+    "]": "CLOSING_SQUARE_BRACKET",
+    "<": "LESS_THAN_SIGN",
+    ">": "GREATER_THAN_SIGN",
+    "+": "PLUS",
+    "(": "OPENING_PARENTHESIS",
+    ")": "CLOSING_PARENTHESIS",
+    "/": "FORWARD_SLASH",
+    "\\": "BACKSLASH",
+    "^": "CARET",
+    "%": "PERCENT",
+    "!": "EXCLAMATION_MARK",
+    "?": "QUESTION_MARK",
+    "~": "TILDE",
+    "`": "BACKTICK",
+    "@": "@",
+}
+NUMBER_BOOK = {
+    "0": "ZERO",
+    "1": "ONE",
+    "2": "TWO",
+    "3": "THREE",
+    "4": "FOUR",
+    "5": "FIVE",
+    "6": "SIX",
+    "7": "SEVEN",
+    "8": "EIGHT",
+    "9": "NINE",
 }
 
 
-main() {
-    local -r USAGE="Usage: $(basename "${0}") [<text>]"
-    local -r HELP="Translate text to NATO phonetic alphabet
+COLOR_LETTER = "\033[92m"
+COLOR_NUMBER = "\033[94m"
+COLOR_SYMBOL = "\033[0m"
+COLOR_RAW = "\033[0m"
+RESET = "\033[0m"
 
-$USAGE
 
-Help:
-    -h, --help	Display this message"
+def write_with_color(color, text):
+    """Write text with specified color if not piped"""
+    if sys.stdout.isatty():
+        sys.stdout.write(color)
+    sys.stdout.write(text)
+    if sys.stdout.isatty():
+        sys.stdout.write(RESET)
 
-    while true; do
-        case "$1" in
-            -h | --help ) echo "$HELP"; return 0 ;;
-            -- ) shift; break ;;
-            -* ) echo -e "Unrecognized option: $1\n$USAGE" >&2; return 1 ;;
-            * ) break ;;
-        esac
-    done
 
-    if [ "$#" -eq 0 ]; then
-        while read -r line; do
-            nato "${line}"
-        done
-    else
-        nato "${@}"
-    fi
-}
+def convert(string, _options):
+    """Convert `string` to nato phonetic alphabet"""
+    first = True
+    for char in string:
+        char = char.upper()
+        if first:
+            first = False
+        elif char != "\n":
+            sys.stdout.write(" ")
+        if char in CODEBOOK:
+            write_with_color(COLOR_LETTER, CODEBOOK[char].title())
+        elif char in NUMBER_BOOK:
+            write_with_color(COLOR_NUMBER, NUMBER_BOOK[char].title())
+        elif char in WHITESPACE_BOOK:
+            write_with_color(COLOR_SYMBOL, WHITESPACE_BOOK[char].title())
+        elif char in SYMBOL_BOOK:
+            write_with_color(COLOR_SYMBOL, SYMBOL_BOOK[char].title().replace("_", ""))
+        else:
+            write_with_color(COLOR_RAW, char)
 
-main "${@}"
+
+def main():
+    """Main function"""
+
+    parser = argparse.ArgumentParser(
+        description="Convert string to NATO phonetic alphabet"
+    )
+    parser.add_argument(
+        "string",
+        metavar="S",
+        type=str,
+        nargs="*",
+        default=None,
+        help="String to be converted",
+    )
+    parser.add_argument(
+        "-n", "--no-newline", help="Don't add newline", action="store_true"
+    )
+
+    args = parser.parse_args(sys.argv[1::])
+
+    options = {}
+    if len(args.string) == 0:
+        for line in sys.stdin:
+            convert(line, options)
+    else:
+        string = " ".join(args.string)
+        convert(string, options)
+        if not args.no_newline:
+            print()
+
+
+if __name__ == "__main__":
+    main()
