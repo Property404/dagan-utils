@@ -3,10 +3,10 @@
 # From https://askubuntu.com/questions/69957/script-to-swap-two-files
 # CC BY-SA 3.0 SO user "fossfreedom"
 if [ $# -ne 2 ]; then
-	echo "Usage: swap file1 file2"
+    echo "Usage: swap file1 file2"
 else
-	TMPFILE=$(mktemp)
-	mv "$1" "$TMPFILE"
+    TMPFILE=$(mktemp)
+    mv "$1" "$TMPFILE"
     mv "$2" "$1"
     mv "$TMPFILE" "$2"
 fi
