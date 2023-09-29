@@ -25,8 +25,7 @@
     },
     "cases": [
       {
-        "run": "wslint good_file",
-        "exit": 0
+        "run": "wslint good_file"
       },
       {
         "run": "wslint no_newline",
@@ -41,8 +40,7 @@
         "exit": 1
       },
       {
-        "run": "wslint -f * || wslint *",
-        "exit": 0
+        "run": "wslint -f * || wslint *"
       }
     ]
   },
@@ -118,8 +116,7 @@
     },
     "cases": [
       {
-        "run": "fswap file1 file2",
-        "exit": "0"
+        "run": "fswap file1 file2"
       },
       {
         "run": "cat file1",
@@ -138,12 +135,10 @@
     },
     "cases": [
       {
-        "run": "fhas file1 file2",
-        "exit": "0"
+        "run": "fhas file1 file2"
       },
       {
-        "run": "fhas file1 file1",
-        "exit": "0"
+        "run": "fhas file1 file1"
       },
       {
         "run": "fhas file2 file1",
