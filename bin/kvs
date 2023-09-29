@@ -6,11 +6,11 @@ Simple CLI utility to store and retrieve key/value pairs
 
 import json
 import os
+import pathlib
 import argparse
 import subprocess
 
-KVS_DIR = os.path.expanduser("~/.local/share/kvs/")
-DB_PATH = KVS_DIR + "kdb"
+DEFAULT_DB_PATH = os.path.expanduser("~/.local/share/kvs/kdb")
 
 
 class KvsException(Exception):
@@ -24,15 +24,15 @@ class Database:
     path = None
 
     def __init__(self, path):
-        if not os.path.exists(KVS_DIR):
-            os.mkdir(KVS_DIR)
+        self.path = pathlib.Path(path)
+        if not os.path.exists(self.path.parent.absolute()):
+            os.mkdir(self.path.parent.absolute())
         # Load database (or create if not exists)
         if not os.path.isfile(path):
             with open(path, "w+", encoding="utf-8") as file:
                 file.write("""{"pairs":{}}""")
         with open(path, "r", encoding="utf-8") as file:
             self.data = json.loads(file.read())
-        self.path = path
 
     def save(self):
         """Save whole database to a file"""
@@ -64,7 +64,7 @@ class Database:
 
 def store(args):
     """Set a key/value pair in the local database"""
-    database = Database(DB_PATH)
+    database = Database(args.database)
     key = args.key
     value = args.value
     database.store_value(key, value)
@@ -72,7 +72,7 @@ def store(args):
 
 def get(args):
     """Get a key/value pair from the local database"""
-    database = Database(DB_PATH)
+    database = Database(args.database)
     key = args.key
     os.sys.stdout.write(database.get_value(key))
     if args.no_newline:
@@ -83,7 +83,7 @@ def get(args):
 
 def snip(args):
     """Copy a value from the local database to the clipboard"""
-    database = Database(DB_PATH)
+    database = Database(args.database)
     key = args.key
     value = database.get_value(key)
 
@@ -98,15 +98,15 @@ def snip(args):
 
 def rm_pair(args):
     """Delete a key/value pair from the local database"""
-    database = Database(DB_PATH)
+    database = Database(args.database)
     key = args.key
     database.delete_pair(key)
     print(f"Deleted key '{key}' from database")
 
 
-def list_keys(_):
+def list_keys(args):
     """List all keys in the local database"""
-    database = Database(DB_PATH)
+    database = Database(args.database)
     pairs = database.get_pairs()
     for key in sorted(pairs.keys()):
         print(f"{key} {pairs[key]}")
@@ -115,10 +115,16 @@ def list_keys(_):
 def main():
     """Main function"""
     parser = argparse.ArgumentParser(description="Key-Value Store.")
+    parser.add_argument(
+        "-d",
+        "--database",
+        type=str,
+        metavar="DB",
+        default=DEFAULT_DB_PATH,
+        help="Database file to use",
+    )
 
-    subparsers = (
-        parser.add_subparsers()
-    )  # title="subcommands", description="valid subcommands", help=")
+    subparsers = parser.add_subparsers()
 
     parser_store = subparsers.add_parser("store")
     parser_store.add_argument("key", metavar="key", type=str, help="Key")
@@ -132,13 +138,13 @@ def main():
     parser_get.add_argument("key", metavar="key", type=str, help="Key")
     parser_get.set_defaults(func=get)
 
-    parser_get = subparsers.add_parser("snip")
-    parser_get.add_argument("key", metavar="key", type=str, help="Key")
-    parser_get.set_defaults(func=snip)
+    parser_snip = subparsers.add_parser("snip")
+    parser_snip.add_argument("key", metavar="key", type=str, help="Key")
+    parser_snip.set_defaults(func=snip)
 
-    parser_get = subparsers.add_parser("rm")
-    parser_get.add_argument("key", metavar="key", type=str, help="Key")
-    parser_get.set_defaults(func=rm_pair)
+    parser_rm = subparsers.add_parser("rm")
+    parser_rm.add_argument("key", metavar="key", type=str, help="Key")
+    parser_rm.set_defaults(func=rm_pair)
 
     parser_list = subparsers.add_parser("list")
     parser_list.set_defaults(func=list_keys)
@@ -146,11 +152,12 @@ def main():
     args = parser.parse_args(os.sys.argv[1::])
 
     try:
-        args.func(args)
-    except AttributeError:
-        print("Please specify subcommand", file=os.sys.stderr)
-        parser.print_help()
-        return 1
+        if "func" in args:
+            args.func(args)
+        else:
+            print("Please specify subcommand", file=os.sys.stderr)
+            parser.print_help()
+            return 1
     except KvsException as err:
         print(f"Error: {err}", file=os.sys.stderr)
         return 1

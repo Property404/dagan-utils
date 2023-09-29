@@ -9,11 +9,14 @@ import tempfile
 import time
 
 
-def fail(info):
+def fail(info, result):
     """Indicate a test case failed"""
     print("Test failed")
     for (key, value) in info.items():
         print(f"\t{key}: {value}")
+    print(f"\tstdout: {result.stdout}")
+    print(f"\tstderr: {result.stderr}")
+    print(f"\tstatus: {result.returncode}")
     sys.exit(1)
 
 
@@ -37,9 +40,10 @@ def run_test_case(test_case):
             fail(
                 {
                     "Command": command,
-                    "Expected": expected_stdout,
-                    "Actual": result.stdout,
-                }
+                    "Expected stdout": expected_stdout,
+                    "Actual stdout": result.stdout,
+                },
+                result,
             )
 
     if "exit" in test_case:
@@ -53,7 +57,8 @@ def run_test_case(test_case):
                 "Command": command,
                 "Expected status": expected_exit_status,
                 "Actual status": result.returncode,
-            }
+            },
+            result,
         )
 
     if "max_time" in test_case:
@@ -67,7 +72,8 @@ def run_test_case(test_case):
                 "Command": command,
                 "Elapsed time": f"{elapsed_time}s",
                 "Max elapsed time": f"{max_time}s",
-            }
+            },
+            result,
         )
 
 
@@ -99,7 +105,7 @@ def main():
         else:
             run_test_case(test)
 
-        for file in files:
+        for file in os.listdir(tempdir):
             os.unlink(file)
         os.chdir(cwd)
         os.rmdir(tempdir)

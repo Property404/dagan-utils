@@ -150,5 +150,30 @@
         "exit": "1"
       }
     ]
+  },
+  {
+    "cases": [
+      {
+        "run": "kvs -d test --help"
+      },
+      {
+        "run": "kvs -d test store foo bar"
+      },
+      {
+        "run": "kvs -d test list",
+        "stdout": "foo bar"
+      },
+      {
+        "run": "kvs -d test get foo",
+        "stdout": "bar"
+      },
+      {
+        "run": "kvs -d test rm foo"
+      },
+      {
+        "run": "kvs -d test get foo",
+        "exit": 1
+      }
+    ]
   }
 ]
