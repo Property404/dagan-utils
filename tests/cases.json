@@ -168,6 +168,10 @@
       {
         "run": "kvs -d test get foo",
         "exit": 1
+      },
+      {
+        "description": "Create config in nonextant directory",
+        "run": "kvs -d a/b/c/d/e/f/test store foo bar && rm -r a"
       }
     ]
   },
