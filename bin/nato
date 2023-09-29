@@ -97,16 +97,23 @@ COLOR_RAW = "\033[0m"
 RESET = "\033[0m"
 
 
-def write_with_color(color, text):
+def write_with_color(color, text, options):
     """Write text with specified color if not piped"""
-    if sys.stdout.isatty():
+
+    use_color = sys.stdout.isatty()
+    if options["color"] == "always":
+        use_color = True
+    elif options["color"] == "never":
+        use_color = False
+
+    if use_color:
         sys.stdout.write(color)
     sys.stdout.write(text)
-    if sys.stdout.isatty():
+    if use_color:
         sys.stdout.write(RESET)
 
 
-def convert(string, _options):
+def convert(string, options):
     """Convert `string` to nato phonetic alphabet"""
     first = True
     for char in string:
@@ -116,15 +123,17 @@ def convert(string, _options):
         elif char != "\n":
             sys.stdout.write(" ")
         if char in CODEBOOK:
-            write_with_color(COLOR_LETTER, CODEBOOK[char].title())
+            write_with_color(COLOR_LETTER, CODEBOOK[char].title(), options)
         elif char in NUMBER_BOOK:
-            write_with_color(COLOR_NUMBER, NUMBER_BOOK[char].title())
+            write_with_color(COLOR_NUMBER, NUMBER_BOOK[char].title(), options)
         elif char in WHITESPACE_BOOK:
-            write_with_color(COLOR_SYMBOL, WHITESPACE_BOOK[char].title())
+            write_with_color(COLOR_SYMBOL, WHITESPACE_BOOK[char].title(), options)
         elif char in SYMBOL_BOOK:
-            write_with_color(COLOR_SYMBOL, SYMBOL_BOOK[char].title().replace("_", ""))
+            write_with_color(
+                COLOR_SYMBOL, SYMBOL_BOOK[char].title().replace("_", ""), options
+            )
         else:
-            write_with_color(COLOR_RAW, char)
+            write_with_color(COLOR_RAW, char, options)
 
 
 def main():
@@ -144,10 +153,13 @@ def main():
     parser.add_argument(
         "-n", "--no-newline", help="Don't add newline", action="store_true"
     )
+    parser.add_argument(
+        "--color", help="Set color", default="auto", choices=["always", "never", "auto"]
+    )
 
     args = parser.parse_args(sys.argv[1::])
 
-    options = {}
+    options = {"color": args.color}
     if len(args.string) == 0:
         for line in sys.stdin:
             convert(line, options)
