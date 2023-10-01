@@ -36,7 +36,11 @@ def main():
     args = parser.parse_args(sys.argv[1::])
 
     # pylint: disable=W0123
-    val = eval(" ".join(args.expression))
+    try:
+        val = eval(" ".join(args.expression))
+    except (SyntaxError, ZeroDivisionError) as err:
+        print(f"peval: error: {err}", file=sys.stderr)
+        return 1
 
     if args.hexadecimal:
         print(hex(int(val)))
@@ -47,6 +51,8 @@ def main():
     else:
         print(val)
 
+    return 0
+
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

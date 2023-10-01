@@ -82,12 +82,20 @@
     "stdout": "Hello World"
   },
   {
-    "run": "peval 1+1",
-    "stdout": "2"
-  },
-  {
-    "run": "peval -x 1+1",
-    "stdout": "0x2"
+    "cases": [
+      {
+        "run": "peval 1+1",
+        "stdout": "2"
+      },
+      {
+        "run": "peval -x 1+1",
+        "stdout": "0x2"
+      },
+      {
+        "run": "peval 0/0",
+        "exit": 1
+      }
+    ]
   },
   {
     "run": "dec2hex 32",
