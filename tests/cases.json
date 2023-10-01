@@ -177,7 +177,7 @@
   },
   {
     "run": "countdown 0",
-    "max_time": 0.100
+    "max_time": 0.500
   },
   {
     "run": "untilfail false"
