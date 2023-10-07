@@ -13,7 +13,7 @@ def fail(reason, info, result):
     """Indicate a test case failed"""
     print("Test failed")
     print(f"\tReason: {reason}")
-    for (key, value) in info.items():
+    for key, value in info.items():
         print(f"\t{key}: {value}")
 
     print(f"\tCommand: {result.args[2]}")
