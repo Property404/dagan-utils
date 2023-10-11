@@ -18,7 +18,7 @@ jobs:
       - name: Install dependencies (ubuntu)
         run: sudo apt install black shellcheck pylint || true
       - name: Install dependencies (macOS)
-        run: brew install black shellcheck pylint || true
+        run: brew install black shellcheck pylint gsed || true
       - name: Lint scripts
         run: make lint
       - name: Run tests
