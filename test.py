@@ -9,14 +9,14 @@ import tempfile
 import time
 
 
-def fail(reason, info, result):
+def fail(reason, command, info, result):
     """Indicate a test case failed"""
     print("Test failed")
     print(f"\tReason: {reason}")
     for key, value in info.items():
         print(f"\t{key}: {value}")
 
-    print(f"\tCommand: {result.args[2]}")
+    print(f"\tCommand: {command}")
     print(f"\tStdout: {result.stdout}")
     print(f"\tStderr: {result.stderr}")
     print(f"\tStatus: {result.returncode}")
@@ -42,6 +42,7 @@ def run_test_case(test_case):
         if expected_stdout != result.stdout:
             fail(
                 "Unexpected stdout",
+                command,
                 {
                     "Expected stdout": expected_stdout,
                 },
@@ -56,6 +57,7 @@ def run_test_case(test_case):
     if expected_exit_status != result.returncode:
         fail(
             "Unexpected exit status",
+            command,
             {
                 "Expected status": expected_exit_status,
             },
@@ -70,6 +72,7 @@ def run_test_case(test_case):
     if elapsed_time > max_time:
         fail(
             "Took too long",
+            command,
             {
                 "Elapsed time": f"{elapsed_time}s",
                 "Max elapsed time": f"{max_time}s",
