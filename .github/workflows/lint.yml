@@ -15,8 +15,10 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      - name: Install dependencies
-        run: sudo apt install black shellcheck pylint
+      - name: Install dependencies (ubuntu)
+        run: command -v apt && sudo apt install black shellcheck pylint
+      - name: Install dependencies (macOS)
+        run: command -v brew && sudo apt install black shellcheck pylint
       - name: Lint scripts
         run: make lint
       - name: Run tests
