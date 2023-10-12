@@ -4,12 +4,13 @@
 set -e
 
 main() {
-    local -r USAGE="Usage: $(basename "${0}") [-i] [<files>]"
+    local -r USAGE="Usage: $(basename "${0}") [-f] [<files>]"
     local -r HELP="Lints file for (typically) unneeded whitespace
 
 $USAGE
 
 Help:
+    -f, --fix   Fix file (in-place)
     -h, --help	Display this message"
 
     local fix
