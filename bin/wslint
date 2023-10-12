@@ -4,18 +4,21 @@
 set -e
 
 main() {
-    local -r USAGE="Usage: $(basename "${0}") [-f] [<files>]"
+    local -r USAGE="Usage: $(basename "${0}") [-fs] [<files>]"
     local -r HELP="Lints file for (typically) unneeded whitespace
 
 $USAGE
 
 Help:
+    -s          Silence skipping of files
     -f, --fix   Fix file (in-place)
     -h, --help	Display this message"
 
+    local silence_skipping
     local fix
     while true; do
         case "$1" in
+            -s) silence_skipping=1; shift ;;
             -f | --fix) fix=1; shift ;;
             -h | --help ) echo "$HELP"; return 0 ;;
             -- ) shift; break ;;
@@ -47,12 +50,16 @@ Help:
                 echo "No such file: '${file}'" >&2
                 return 1
             fi
-            echo "'${file}' is not a file, skipping"
+            if [[ -z "${silence_skipping}" ]]; then
+                echo "'${file}' is not a file, skipping"
+            fi
             continue
         fi
 
         if grep -q 'charset=binary' <(file --mime "${file}"); then
-            echo "'${file}' looks like a binary, skipping"
+            if [[ -z "${silence_skipping}" ]]; then
+                echo "'${file}' looks like a binary, skipping"
+            fi
             continue
         fi
 

@@ -21,7 +21,8 @@
       "no_newline": "Hello world!",
       "space_at_end": "Hello world! \n",
       "too_many_newlines": "Hello world!\n\n",
-      "many_spaces_at_end": "Hello world!      \n"
+      "many_spaces_at_end": "Hello world!      \n",
+      "skipped_file": "\u0001\u0002\u0003\u0004\u0005"
     },
     "cases": [
       {
@@ -38,6 +39,14 @@
       {
         "run": "wslint too_many_newlines",
         "exit": 1
+      },
+      {
+        "run": "wslint good_file skipped_file"
+      },
+      {
+        "run": "wslint -s good_file skipped_file && echo",
+        "stderr": "",
+        "stdout": ""
       },
       {
         "run": "wslint -f * || wslint *"
