@@ -41,9 +41,11 @@
         "exit": 1
       },
       {
+        "description": "Make sure we don't error on encountering a binary file",
         "run": "wslint good_file skipped_file"
       },
       {
+        "description": "Make sure -s option works",
         "run": "wslint -s good_file skipped_file",
         "stderr": "",
         "stdout": ""
