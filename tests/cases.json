@@ -3,11 +3,11 @@
     "cases": [
       {
         "run": "echo dagan | nato",
-        "stdout": "Delta Alfa Golf Alfa November"
+        "stdout": "Delta Alfa Golf Alfa November\n"
       },
       {
         "run": "nato da gan",
-        "stdout": "Delta Alfa Space Golf Alfa November"
+        "stdout": "Delta Alfa Space Golf Alfa November\n"
       },
       {
         "run": "echo {0..1000} | nato",
@@ -44,7 +44,7 @@
         "run": "wslint good_file skipped_file"
       },
       {
-        "run": "wslint -s good_file skipped_file && echo",
+        "run": "wslint -s good_file skipped_file",
         "stderr": "",
         "stdout": ""
       },
@@ -62,43 +62,43 @@
     "cases": [
       {
         "run": "fsize zero",
-        "stdout": "0"
+        "stdout": "0\n"
       },
       {
         "run": "fsize one",
-        "stdout": "1"
+        "stdout": "1\n"
       },
       {
         "run": "fsize six",
-        "stdout": "6"
+        "stdout": "6\n"
       },
       {
         "run": "fsize -n six",
-        "stdout": "6 six"
+        "stdout": "6 six\n"
       },
       {
         "run": "fsize this-file-dont-exist",
-        "exit": "1"
+        "exit": "1\n"
       }
     ]
   },
   {
     "run": "echo -e \"\\x1b[31mHello World\\x1b[0m\" | colorstrip",
-    "stdout": "Hello World"
+    "stdout": "Hello World\n"
   },
   {
     "run": "echo hello world | titlecase",
-    "stdout": "Hello World"
+    "stdout": "Hello World\n"
   },
   {
     "cases": [
       {
         "run": "peval 1+1",
-        "stdout": "2"
+        "stdout": "2\n"
       },
       {
         "run": "peval -x 1+1",
-        "stdout": "0x2"
+        "stdout": "0x2\n"
       },
       {
         "run": "peval 0/0",
@@ -108,28 +108,28 @@
   },
   {
     "run": "dec2hex 32",
-    "stdout": "0x20"
+    "stdout": "0x20\n"
   },
   {
     "run": "hex2dec 20",
-    "stdout": "32"
+    "stdout": "32\n"
   },
   {
     "run": "argcount",
-    "stdout": "0"
+    "stdout": "0\n"
   },
   {
     "run": "argcount hi",
-    "stdout": "1"
+    "stdout": "1\n"
   },
   {
     "run": "argcount hi there",
-    "stdout": "2"
+    "stdout": "2\n"
   },
   {
     "files": {
-      "file1": "bulbasaur\n",
-      "file2": "koffing\n"
+      "file1": "bulbasaur",
+      "file2": "koffing"
     },
     "cases": [
       {
@@ -173,10 +173,10 @@
       },
       {
         "run": "kvs -d test list",
-        "stdout": "foo bar"
+        "stdout": "foo bar\n"
       },
       {
-        "run": "kvs -d test get foo",
+        "run": "kvs -d test get -n foo",
         "stdout": "bar"
       },
       {

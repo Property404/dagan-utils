@@ -38,13 +38,24 @@ def run_test_case(test_case):
     elapsed_time = time.time() - start_time
 
     if "stdout" in test_case:
-        expected_stdout = bytes(test_case["stdout"] + "\n", "ascii")
+        expected_stdout = bytes(test_case["stdout"], "ascii")
         if expected_stdout != result.stdout:
             fail(
                 "Unexpected stdout",
                 command,
                 {
                     "Expected stdout": expected_stdout,
+                },
+                result,
+            )
+    if "stderr" in test_case:
+        expected_stderr = bytes(test_case["stderr"], "ascii")
+        if expected_stderr != result.stderr:
+            fail(
+                "Unexpected stderr",
+                command,
+                {
+                    "Expected stderr": expected_stderr,
                 },
                 result,
             )
