@@ -44,6 +44,9 @@ def main():
     """Main function"""
     parser = argparse.ArgumentParser(description="Like sleep(1) but with output")
     parser.add_argument("expression", metavar="E", type=str, nargs="+", default=None)
+    parser.add_argument(
+        "-s", "--seconds", help="Display as seconds only", action="store_true"
+    )
     # This just exists for tests
     parser.add_argument("-d", "--dry", help=argparse.SUPPRESS, action="store_true")
 
@@ -57,7 +60,21 @@ def main():
     try:
         count = 0
         for count in range(0, total_seconds):
-            sys.stdout.write(f"{CLEAR}{total_seconds-count}")
+            seconds_left = total_seconds - count
+            sys.stdout.write(CLEAR)
+            if args.seconds:
+                sys.stdout.write(str(seconds_left))
+            else:
+                (hours_left, seconds_left) = divmod(seconds_left, 3600)
+                (minutes_left, seconds_left) = divmod(seconds_left, 60)
+                if hours_left > 0:
+                    sys.stdout.write(
+                        f"{hours_left}:{minutes_left:02}:{seconds_left:02}"
+                    )
+                elif minutes_left > 0:
+                    sys.stdout.write(f"{minutes_left}:{seconds_left:02}")
+                elif seconds_left > 0:
+                    sys.stdout.write(f"{seconds_left}")
             sys.stdout.flush()
             time.sleep(1)
     except KeyboardInterrupt:
