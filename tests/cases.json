@@ -195,8 +195,44 @@
     ]
   },
   {
-    "run": "countdown 0",
-    "max_time": 0.500
+    "cases": [
+      {
+        "run": "countdown 0",
+        "max_time": 0.500
+      },
+      {
+        "run": "countdown -d 0",
+        "stdout": "0\n"
+      },
+      {
+        "run": "countdown -d 0s",
+        "stdout": "0\n"
+      },
+      {
+        "run": "countdown -d 0m",
+        "stdout": "0\n"
+      },
+      {
+        "run": "countdown -d 1",
+        "stdout": "1\n"
+      },
+      {
+        "run": "countdown -d 1s",
+        "stdout": "1\n"
+      },
+      {
+        "run": "countdown -d 1m",
+        "stdout": "60\n"
+      },
+      {
+        "run": "countdown -d 1m30s",
+        "stdout": "90\n"
+      },
+      {
+        "run": "countdown -d 1m 30s",
+        "stdout": "90\n"
+      }
+    ]
   },
   {
     "run": "untilfail false"

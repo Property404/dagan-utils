@@ -44,10 +44,15 @@ def main():
     """Main function"""
     parser = argparse.ArgumentParser(description="Like sleep(1) but with output")
     parser.add_argument("expression", metavar="E", type=str, nargs="+", default=None)
+    # This just exists for tests
+    parser.add_argument("-d", "--dry", help=argparse.SUPPRESS, action="store_true")
 
     args = parser.parse_args(sys.argv[1::])
 
     total_seconds = parse_to_seconds(" ".join(args.expression))
+    if args.dry:
+        print(total_seconds)
+        return
 
     try:
         count = 0
