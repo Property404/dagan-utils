@@ -74,7 +74,7 @@
     ]
   },
   {
-    "run": "echo -e \"\\e[31mHello World\\e[0m\" | colorstrip",
+    "run": "echo -e \"\\x1b[31mHello World\\x1b[0m\" | colorstrip",
     "stdout": "Hello World"
   },
   {
