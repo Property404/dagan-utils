@@ -105,6 +105,14 @@
       {
         "run": "peval 0/0",
         "exit": 1
+      },
+      {
+        "run": "peval -n 5",
+        "stdout": "5"
+      },
+      {
+        "run": "peval -nx 5",
+        "stdout": "0x5"
       }
     ]
   },

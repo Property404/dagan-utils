@@ -32,6 +32,7 @@ def main():
         "-b", "--binary", help="Binary format", action="store_true"
     )
     base_options.add_argument("-o", "--octal", help="Octal format", action="store_true")
+    parser.add_argument("-n", "--no-newline", help="No newline", action="store_true")
 
     args = parser.parse_args(sys.argv[1::])
 
@@ -43,14 +44,18 @@ def main():
         return 1
 
     if args.hexadecimal:
-        print(hex(int(val)))
+        val = hex(int(val))
     elif args.binary:
-        print(bin(int(val)))
+        val = bin(int(val))
     elif args.octal:
-        print(oct(int(val)))
+        val = oct(int(val))
+    else:
+        val = str(val)
+
+    if args.no_newline:
+        sys.stdout.write(val)
     else:
         print(val)
-
     return 0
 
 
