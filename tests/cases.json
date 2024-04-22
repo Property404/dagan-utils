@@ -75,6 +75,10 @@
         "stdout": "6\n"
       },
       {
+        "run": "fsize -f six",
+        "stdout": "6\n"
+      },
+      {
         "run": "fsize -n six",
         "stdout": "6 six\n"
       },

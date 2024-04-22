@@ -7,6 +7,22 @@ import sys
 import argparse
 
 
+def make_human_readable(val):
+    """Convert a size in bytes to human readable format"""
+    val = int(val)
+    suffix = ""
+    if val >= 2**30:
+        val //= 2**30
+        suffix = "GiB"
+    elif val >= 2**20:
+        val //= 2**20
+        suffix = "MiB"
+    elif val >= 2**10:
+        val //= 2**10
+        suffix = "KiB"
+    return (val, suffix)
+
+
 def main():
     """Main function"""
 
@@ -26,16 +42,26 @@ def main():
         help="Print names",
         action="store_true",
     )
+    parser.add_argument(
+        "-f",
+        "--fancy",
+        help="Make sizes human-readable",
+        action="store_true",
+    )
 
     args = parser.parse_args(sys.argv[1::])
 
     for file_name in args.files:
         try:
+            suffix = ""
             size = os.path.getsize(file_name)
+            if args.fancy:
+                (size, suffix) = make_human_readable(size)
             if args.hexadecimal:
                 line = hex(size)
             else:
                 line = str(size)
+            line += suffix
             if args.name:
                 line += f" {file_name}"
             print(line)
