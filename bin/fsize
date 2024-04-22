@@ -10,15 +10,16 @@ import argparse
 def make_human_readable(val):
     """Convert a size in bytes to human readable format"""
     val = int(val)
+    prec = 100
     suffix = ""
     if val >= 2**30:
-        val //= 2**30
+        val = (val * prec // 2**30) / prec
         suffix = "GiB"
     elif val >= 2**20:
-        val //= 2**20
+        val = (val * prec // 2**20) / prec
         suffix = "MiB"
     elif val >= 2**10:
-        val //= 2**10
+        val = (val * prec // 2**10) / prec
         suffix = "KiB"
     return (val, suffix)
 
