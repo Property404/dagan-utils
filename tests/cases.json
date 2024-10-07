@@ -248,5 +248,41 @@
   },
   {
     "run": "untilfail false"
+  },
+  {
+    "cases": [
+        {
+            "run": "echo 'Hello' | words",
+            "stdout": "Hello\n"
+        },
+        {
+            "run": "echo 'Hello' | words -d 'l'",
+            "stdout": "He\no\n"
+        },
+        {
+            "run": "echo 'Hello there|friend' | words",
+            "stdout": "Hello\nthere\nfriend\n"
+        },
+        {
+            "run": "echo 'foo 3bar' | words",
+            "stdout": "foo\n3bar\n"
+        },
+        {
+            "run": "echo 'foo 3bar' | words -i",
+            "stdout": "foo\n"
+        },
+        {
+            "run": "echo 'foo 3bar' | words -u",
+            "stdout": ""
+        },
+        {
+            "run": "echo 'foo 3BAR' | words -u",
+            "stdout": "3BAR\n"
+        },
+        {
+            "run": "echo 'foo 3BAR' | words -iu",
+            "stdout": ""
+        }
+    ]
   }
 ]

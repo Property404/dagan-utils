@@ -1,0 +1,57 @@
+#!/usr/bin/env python3
+"""
+# Words
+List words or identifiers in file
+"""
+
+import sys
+import argparse
+import re
+
+
+def main():
+    """Main function"""
+    parser = argparse.ArgumentParser(description="List words in a file")
+    parser.add_argument(
+        "-d",
+        "--delim",
+        type=str,
+        metavar="DELIM",
+        default=" \t\n\r`~!@#$%^&*()-+=\\[]{}|;:'\"<>.,?/",
+        help="Delimiters",
+    )
+    parser.add_argument(
+        "-i", "--identifiers", help="Exclude non-identifiers words", action="store_true"
+    )
+    parser.add_argument(
+        "-u", "--uppercase", help="Exclude lowercase words", action="store_true"
+    )
+    parser.add_argument(
+        "files",
+        metavar="FILES",
+        type=str,
+        nargs="*",
+        default=["-"],
+        help="Target files",
+    )
+
+    args = parser.parse_args(sys.argv[1::])
+    dpattern = re.compile("[" + "".join(map(re.escape, list(args.delim))) + "]+")
+    ident_pattern = re.compile("[_A-Za-z][_a-zA-Z0-9]*$")
+
+    for file_name in args.files:
+        if file_name == "-":
+            file_name = "/dev/stdin"
+        with open(file_name, "r", encoding="utf-8") as fp:
+            for line in fp:
+                words = dpattern.split(line.strip())
+                if words is not None:
+                    for word in words:
+                        if word != "" and (
+                            not args.identifiers or ident_pattern.match(word)
+                        ) and (not args.uppercase or word.isupper()):
+                            print(word)
+
+
+if __name__ == "__main__":
+    main()
