@@ -47,9 +47,11 @@ def main():
                 words = dpattern.split(line.strip())
                 if words is not None:
                     for word in words:
-                        if word != "" and (
-                            not args.identifiers or ident_pattern.match(word)
-                        ) and (not args.uppercase or word.isupper()):
+                        if (
+                            word != ""
+                            and (not args.identifiers or ident_pattern.match(word))
+                            and (not args.uppercase or word.isupper())
+                        ):
                             print(word)
 
 
