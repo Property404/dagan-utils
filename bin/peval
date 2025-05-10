@@ -11,6 +11,28 @@ import argparse
 from math import *
 
 
+def peval(expr, args):
+    """Evaluate and print a Python expression"""
+
+    # pylint: disable=W0123
+    try:
+        val = eval(expr)
+    except (SyntaxError, ZeroDivisionError, NameError) as err:
+        print(f"peval: error: {err}", file=sys.stderr)
+        sys.exit(1)
+
+    if args.hexadecimal:
+        val = hex(int(val))
+    elif args.binary:
+        val = bin(int(val))
+    elif args.octal:
+        val = oct(int(val))
+    else:
+        val = str(val)
+
+    sys.stdout.write(val)
+
+
 def main():
     """Main function"""
     parser = argparse.ArgumentParser(
@@ -20,7 +42,7 @@ def main():
         "expression",
         metavar="E",
         type=str,
-        nargs="+",
+        nargs="*",
         default=None,
         help="Expression to be evaluated",
     )
@@ -36,28 +58,22 @@ def main():
 
     args = parser.parse_args(sys.argv[1::])
 
-    # pylint: disable=W0123
-    try:
-        val = eval(" ".join(args.expression))
-    except (SyntaxError, ZeroDivisionError, NameError) as err:
-        print(f"peval: error: {err}", file=sys.stderr)
-        return 1
+    if args.expression == []:
+        first = True
+        for line in sys.stdin:
+            # Print newline after every line, except last
+            if not first:
+                print()
+            first = False
 
-    if args.hexadecimal:
-        val = hex(int(val))
-    elif args.binary:
-        val = bin(int(val))
-    elif args.octal:
-        val = oct(int(val))
+            # Then evaluate and print the expression
+            peval(line, args)
     else:
-        val = str(val)
+        peval("".join(args.expression), args)
 
-    if args.no_newline:
-        sys.stdout.write(val)
-    else:
-        print(val)
-    return 0
+    if not args.no_newline:
+        print()
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    main()

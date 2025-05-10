@@ -117,6 +117,14 @@
       {
         "run": "peval -nx 5",
         "stdout": "0x5"
+      },
+      {
+        "run": "echo 2+2 | peval -n",
+        "stdout": "4"
+      },
+      {
+        "run": "echo -e '2\n1+4' | peval",
+        "stdout": "2\n5\n"
       }
     ]
   },
