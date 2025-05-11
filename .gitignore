@@ -2,6 +2,7 @@
 !**/
 !.gitignore
 !bin/*
+!shell_completion/*.bash
 !*.md
 !*.sh
 !*.py
