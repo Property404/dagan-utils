@@ -95,7 +95,7 @@ def run_test_case(test_case):
 def main():
     """Main function"""
 
-    with open("tests/cases.json", encoding="utf-8") as file:
+    with open("utcases.json", encoding="utf-8") as file:
         tests = json.loads(file.read())
 
     cwd = os.getcwd()
