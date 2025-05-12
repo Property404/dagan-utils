@@ -22,4 +22,4 @@ mininstall:
 install:
 	mkdir -p ${INSTALL_DIR}
 	cp bin/* ${INSTALL_DIR}
-	[[ -d ${BASH_COMPLETION_DIR} ]] && cp shell_completion/*.bash ${BASH_COMPLETION_DIR}; true
+	[ -d ${BASH_COMPLETION_DIR} ] && cp shell_completion/*.bash ${BASH_COMPLETION_DIR}; true
