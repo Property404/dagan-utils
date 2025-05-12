@@ -2,7 +2,7 @@ CORE_FILES=argcount colorstrip countdown dec2hex fhas fsize fswap hex2dec peval 
 INSTALL_DIR=~/.local/bin/
 BASH_COMPLETION_DIR=~/.bash_completion.d/
 
-all: lint
+all: lint test
 	@:
 
 lint:
