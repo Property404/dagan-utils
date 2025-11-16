@@ -86,10 +86,16 @@ def snip(args):
     key = args.key
     value = database.get_value(key)
 
+    # macOS
     if os.sys.platform == "darwin":
         commands = ["pbcopy"]
+    # wayland/Linux
     elif os.environ.get("XDG_SESSION_TYPE") == "wayland":
         commands = ["wl-copy", "-n"]
+    # WSL
+    elif os.environ.get("WSL_DISTRO_NAME") is not None:
+        commands = ["clip.exe"]
+    # X11/Linux
     else:
         commands = ["xsel", "-b"]
     subprocess.run(commands, input=value.encode(), check=True)
