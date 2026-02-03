@@ -1,3 +1,61 @@
 #!/bin/bash
-# Repeatedly run a command until it fails
-while eval "$*"; do true; done
+# Repeatedly run a command until it fails or succeeds, depending on how this
+# script is invoked
+set -e
+
+main() {
+    # Determine if this is `untilfail` or `untilsucceed` and act accordingly
+    local end_condition
+    local until_succeed
+    if [[ "$(basename "${0}")" == "untilfail" ]]; then
+        end_condition="failure"
+    elif [[ "$(basename "${0}")" == "untilsucceed" ]]; then
+        end_condition="success"
+        until_succeed=1
+    else
+        echo "Wrong name for script"
+        exit 1
+    fi
+
+    local -r USAGE="Usage: $(basename "${0}") [-s] [<args>...]"
+    local -r HELP="Run a command until ${end_condition}
+
+$USAGE
+
+Help:
+    -s, --stats   Show stats after completion
+    -h, --help	  Display this message"
+    local stats
+    while true; do
+        case "$1" in
+            -s | --stats) stats=1; shift ;;
+            -h | --help ) echo "$HELP"; return 0 ;;
+            -- ) shift; break ;;
+            -* ) echo -e "Unrecognized option: $1\n$USAGE" >&2; return 1 ;;
+            * ) break ;;
+        esac
+    done
+
+    if [[ -z "$1" ]]; then
+        echo -e "No arguments\n$USAGE" >&2
+        return 1
+    fi
+
+    local count=1; # including the end condition
+    if [[ -n "${until_succeed}" ]]; then
+        while ! eval "$*"
+        do
+            (( count+=1 ))
+        done
+    else
+        while eval "$*"
+        do
+            (( count+=1 ))
+        done
+    fi
+    if [[ -n "${stats}" ]]; then
+        echo "Total runs: ${count}"
+    fi
+}
+
+main "${@}"

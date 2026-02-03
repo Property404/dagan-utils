@@ -1,4 +1,4 @@
-CORE_FILES=argcount colorstrip countdown dec2hex fhas fsize fswap hex2dec peval untilfail
+CORE_FILES=argcount colorstrip countdown dec2hex fhas fsize fswap hex2dec peval untilfail untilsucceed
 INSTALL_DIR=~/.local/bin/
 BASH_COMPLETION_DIR=~/.bash_completion.d/
 
