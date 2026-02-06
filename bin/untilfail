@@ -42,6 +42,8 @@ Help:
     fi
 
     local count=1; # including the end condition
+    local start_time
+    start_time="$(date +%s%N)"
     if [[ -n "${until_succeed}" ]]; then
         while ! eval "$*"
         do
@@ -55,6 +57,7 @@ Help:
     fi
     if [[ -n "${stats}" ]]; then
         echo "Total runs: ${count}"
+        echo "Total time: $((($(date +%s%N) - start_time)/1000000))ms"
     fi
 }
 
