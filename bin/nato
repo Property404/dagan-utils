@@ -7,7 +7,6 @@ The primary purpose of the script is to communicate spelling of names, emails,
 etc over the phone.
 """
 
-
 import sys
 import argparse
 

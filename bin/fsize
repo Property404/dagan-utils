@@ -57,7 +57,7 @@ def main():
             suffix = ""
             size = os.path.getsize(file_name)
             if args.fancy:
-                (size, suffix) = make_human_readable(size)
+                size, suffix = make_human_readable(size)
             if args.hexadecimal:
                 line = hex(size)
             else:

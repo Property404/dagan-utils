@@ -65,8 +65,8 @@ def main():
             if args.seconds:
                 sys.stdout.write(str(seconds_left))
             else:
-                (hours_left, seconds_left) = divmod(seconds_left, 3600)
-                (minutes_left, seconds_left) = divmod(seconds_left, 60)
+                hours_left, seconds_left = divmod(seconds_left, 3600)
+                minutes_left, seconds_left = divmod(seconds_left, 60)
                 if hours_left > 0:
                     sys.stdout.write(
                         f"{hours_left}:{minutes_left:02}:{seconds_left:02}"

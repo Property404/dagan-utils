@@ -3,6 +3,7 @@
 Utility to output results of a Python expression.
 More concise than `python3 -c "print(...)"`
 """
+
 import sys
 import argparse
 
