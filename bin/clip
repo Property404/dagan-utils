@@ -1,0 +1,64 @@
+#!/usr/bin/env bash
+# Universal copy to clipboard
+set -e
+
+colorize() {
+    local color="${1}";shift
+    local msg="$*"
+    if [ -t 1 ]; then
+        msg="\x1b[${color}m$*\x1b[0m"
+    fi
+    echo -e "${msg}"
+}
+
+error() {
+    colorize 31 "clip: fatal: $*"
+    return 1
+}
+
+main() {
+    local -r USAGE="Usage: $(basename "${0}") [-e] [<file>]"
+    local -r HELP="Copy to clipboard
+
+$USAGE
+
+Help:
+    -h, --help	Display this message"
+
+    local file
+    while [[ "$#" -gt 0 ]]; do
+        case "$1" in
+            -h | --help ) echo "$HELP"; return 0 ;;
+            -- ) shift; break ;;
+            -* ) error "Unrecognized option: $1\n$USAGE" ; ;;
+            * ) if [[ -z "${file}" ]]; then
+                    file="${1}";
+                    shift;
+                else
+                    error "Unexpected argument '${1}'"
+                fi
+                ;;
+        esac
+    done
+
+    if [[ -z "${file}" ]]; then
+        file="/dev/stdin"
+    fi
+
+    {
+    if [[ "${XDG_SESSION_TYPE}" == "wayland" ]]; then
+        wl-copy -n
+    elif [[ -n "${WSL_DISTRO_NAME}" ]]; then
+        clip.exe
+    elif [[ "${XDG_SESSION_TYPE}" == "x11" ]]; then
+        xsel -b
+    elif which pbcopy &> /dev/null; then
+        pbcopy
+    else
+        error "unknown system"
+    fi
+    } < "${file}"
+}
+
+trap 'error failed' ERR
+main "$@"
